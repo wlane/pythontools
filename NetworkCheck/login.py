@@ -28,7 +28,7 @@ class SystemInitial(object):
             print "%s\tError\n" % self.ip
 
 remotehosts = {'192.168.0.193': 'aykj83752661','192.168.0.239':'aykj83752661'}
-localhosts = {'127.0.0.1':'njay0508'}
+localhosts = {'10.0.16.55':'njay0508'}
 
 if __name__ == '__main__':
     remote_cmd = ['echo aykj83752661 | sudo -S apt-get install iperf -y --force-yes','iperf -s -D 1>&2']
@@ -48,6 +48,6 @@ if __name__ == '__main__':
             a.start()
             a.join()
             b.start()
-        #threads.append(a)
+        #threads.append(a
     #for t in threads:
         #t.join()
