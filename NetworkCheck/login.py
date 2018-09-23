@@ -12,6 +12,8 @@ class SystemInitial(object):
 
     def ssh_login(self, username, cmd):
         try:
+
+
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(self.ip, 22, username, self.passwd, timeout=5)
@@ -48,6 +50,3 @@ if __name__ == '__main__':
             a.start()
             a.join()
             b.start()
-        #threads.append(a
-    #for t in threads:
-        #t.join()
