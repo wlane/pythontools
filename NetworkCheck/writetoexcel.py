@@ -3,20 +3,32 @@
 
 import xlsxwriter
 
-title = [u'业务流量', u'星期一', u'星期二', u'星期三', u'星期四', u'星期五', u'星期六', u'星期日', u'平均流量']
-buname = [u'业务官网', u'新闻中心', u'购物频道', u'体育频道', u'亲子频道']
+class WriteToExcel(object):
 
-workbook = xlsxwriter.Workbook('test.xlsx')
-worksheet = workbook.add_worksheet('result')
-# worksheet.set_column('A:A', 20)
-# bold = workbook.add_format({'bold': True})
-format_title = workbook.add_format()
-format_title.set_border(1)
-format_title.set_bg_color('#cccccc')
-format_title.set_align('center')
-format_title.set_bold()
+    def __init__(self, ip):
+        #Thread.__init__(self)
+        self.ip = ip
 
-worksheet.write_row('A1', title, format_title)
-worksheet.write_column('A2', buname, format_title)
+    def writein(self):
+        try:
+            localhost = [u'本地主机', '10.0.16.55']
+            title = [u'时间间隔(s)\主机', '192.168.0.193', '192.168.0.239']
+            interval = ['0-5', '5-10', u'平均值']
 
-workbook.close()
+            workbook = xlsxwriter.Workbook('test.xlsx')
+            worksheet = workbook.add_worksheet('result')
+            # worksheet.set_column('A:A', 20)
+            # bold = workbook.add_format({'bold': True})
+            format_title = workbook.add_format()
+            format_title.set_border(1)
+            format_title.set_bg_color('#cccccc')
+            format_title.set_align('center')
+            format_title.set_bold()
+
+            worksheet.write_row('A1',localhost,format_title)
+            worksheet.write_row('A2', title, format_title)
+            worksheet.write_column('A3', interval, format_title)
+
+            workbook.close()
+        except:
+            print "%s\tError\n" % self.ip
