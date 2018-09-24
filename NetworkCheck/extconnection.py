@@ -6,7 +6,7 @@ from pexpect import popen_spawn
 import datetime
 import threading
 
-host = ["114.114.114.114"]
+host = ["8.8.8.8","www.baidu.com"]
 #host = []
 
 class PingStatus(object):
@@ -24,10 +24,11 @@ class PingStatus(object):
         ping.sendline('exit')    # windows
         ping.expect(pexpect.EOF)  # windows
         out = ping.before.decode('gbk')   # windows
-        per = out[:out.find('%')][-2:]   # windows
+        per = out[:out.find('%')][-3:]   # windows
+        print "per= %s" % per   # windows
         per = [ch for ch in per if ch.isdigit()]   # windows
         per = int(''.join(per))   # windows
-        if per >= 100:   # windows
+        if per == 100:   # windows
             print('[%s] %s  网络不通！' % (curtime, self.ip))   # windows
         elif 80 >= per >= 30:   # windows
             print('[%s] %s 网络不稳定！' % (curtime, self.ip))   # windows
