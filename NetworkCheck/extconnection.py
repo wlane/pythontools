@@ -45,6 +45,7 @@ class PingStatus(object):
         except:
             print "%s\tError\n" % self.ip
 
+
 # 多线程同时执行
 if __name__ == '__main__':
     for i in host:
