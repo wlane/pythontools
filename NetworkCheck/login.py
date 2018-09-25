@@ -40,7 +40,7 @@ if __name__ == '__main__':
         for localhost, localpd in localhosts.items():
             print "Begining to login "+host+" ......"
             print host, pd
-            local_cmd = ['iperf -c '+host+' -t 10 -i 5']
+            local_cmd = ['iperf -c '+host+' -t 300 -i 10']
             remote_run = SystemInitial(host, pd)
             local_run = SystemInitial(localhost, localpd)
             a = threading.Thread(target=remote_run.ssh_login, args=(username, remote_cmd))
