@@ -6,8 +6,6 @@ import pexpect
 import datetime
 import threading
 
-host = ["114.114.114.114","www.baidu.com"]
-#host = []
 
 class PingStatus(object):
 
@@ -45,6 +43,8 @@ class PingStatus(object):
         except:
             print "%s\tError\n" % self.ip
 
+
+host = ["114.114.114.114","www.baidu.com"]
 
 # 多线程同时执行
 if __name__ == '__main__':

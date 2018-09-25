@@ -3,51 +3,84 @@
 
 import xlsxwriter
 import time
-
+import ast
+import sys
 
 class WriteToExcel(object):
 
     def __init__(self,workbookname ):
         self.workbookname = workbookname
 
-    def writein(self, localhostip, *intervaltime, **hostip):
+    def writeinband(self, localhostip, **data):
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
         try:
-            title = [u'时间间隔（s）\主机']
-            duration = []
-            localdec=[u'本地主机',localhostip]
-            for t in intervaltime:
-                print t
-                duration.append(t)
-            for host in hostip.keys():
+            titleband = [u'时间间隔（s）\主机']
+            titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
+            titleport = [u'测试端口', u'是否对外开放']
+            bandlocal = [u'本地主机',localhostip]
+            testaddress = ['www.baidu.com', '114.114.114.114']
+            netlocalhost = [u'测试主机', '192.168.0.193']
+            testport = []
+            portconn = []
+
+            for host in ast.literal_eval(data["otherhost"]).keys():
                 if host == 'localhost':
-                    localhost = [u'本地主机', hostip[host]]
+                    localdec = [u'本地主机', ast.literal_eval(data["otherhost"])[host]]
                 else:
-                    title.append(hostip[host])
-            #interval = ['0-10', '10-20', u'平均值']
+                    titleband.append(ast.literal_eval(data["otherhost"])[host])
 
             workbook = xlsxwriter.Workbook(self.workbookname)
-            worksheet = workbook.add_worksheet('result')
+            bandworksheet = workbook.add_worksheet('bandwidth')
+            networksheet = workbook.add_worksheet('netconnectivity')
+            portworksheet = workbook.add_worksheet('portconnectivity')
+
             format_title = workbook.add_format()
             format_title.set_border(1)
             format_title.set_bg_color('#cccccc')
             format_title.set_align('center')
             format_title.set_bold()
 
-            worksheet.write_row('A1',localdec, format_title)
-            worksheet.write_row('A2', title, format_title)
-            worksheet.write_column('A3', duration, format_title)
+            bandworksheet.write_row('A1', bandlocal, format_title)
+            bandworksheet.write_row('A2', titleband, format_title)
+            line = 3
+            t = ast.literal_eval(data["bandvalue"])
+            print "t= "
+            print t
+            for v_t in t:
+                bandworksheet.write_row('A'+str(line), v_t, format_title)
+                line = line+1
+                print line
 
+            networksheet.write_row('A1',netlocalhost, format_title)
+            networksheet.write_row('A2', titlenet, format_title)
+            networksheet.write_column('A3', testaddress, format_title)
+            line = 3
+            t = ast.literal_eval(data["192.168.0.193"])
+            for v_t in t:
+                networksheet.write_row('B'+str(line), v_t, format_title)
+                line += 1
+                print line
+
+            for p in ast.literal_eval(data["portconnect"]).keys():
+                print p, ast.literal_eval(data["portconnect"])[p]
+                testport.append(p)
+                portconn.append(ast.literal_eval(data["portconnect"])[p])
+
+            portworksheet.write_row('A1', titleport, format_title)
+            portworksheet.write_column('A2', testport, format_title)
+            portworksheet.write_column('B2', portconn, format_title)
             workbook.close()
         except:
             print "%s\tError\n" % self.workbookname
 
-
 if __name__ == '__main__':
-    a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+".xlsx")
-    lll = '10.0.16.55'
-    aaa = ['0-5', '5-10']
-    bbb = {
-        'host1': '192',
-        'host2': '168'
+    a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+"-网络测试.xlsx")
+    localip = '10.0.16.55'
+    dt = {
+        "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
+        "otherhost": "{'host1': '192.168.0.193','host2': '192.168.0.233'}",
+        "portconnect": "{'8000': '可达','7001': '不可达'}",
+        "192.168.0.193": "[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]"
     }
-    a.writein(lll, *aaa, **bbb)
+    a.writeinband(localip, **dt)
