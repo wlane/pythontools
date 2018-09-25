@@ -12,9 +12,9 @@ class WriteToExcel(object):
         self.workbookname = workbookname
 
     def writeinband(self, localhostip, **data):
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
-        try:
+            #reload(sys)
+        #sys.setdefaultencoding('utf-8')
+        # try:
             titleband = [u'时间间隔（s）\主机']
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
             titleport = [u'测试端口', u'是否对外开放']
@@ -26,7 +26,7 @@ class WriteToExcel(object):
 
             for host in ast.literal_eval(data["otherhost"]).keys():
                 if host == 'localhost':
-                    localdec = [u'本地主机', ast.literal_eval(data["otherhost"])[host]]
+                    bandlocal = [u'本地主机', ast.literal_eval(data["otherhost"])[host]]
                 else:
                     titleband.append(ast.literal_eval(data["otherhost"])[host])
 
@@ -63,7 +63,9 @@ class WriteToExcel(object):
                 print line
 
             for p in ast.literal_eval(data["portconnect"]).keys():
+                print "p========"
                 print p, ast.literal_eval(data["portconnect"])[p]
+                print ast.literal_eval(data["portconnect"])[p].decode('utf-8')
                 testport.append(p)
                 portconn.append(ast.literal_eval(data["portconnect"])[p])
 
@@ -71,10 +73,14 @@ class WriteToExcel(object):
             portworksheet.write_column('A2', testport, format_title)
             portworksheet.write_column('B2', portconn, format_title)
             workbook.close()
-        except:
-            print "%s\tError\n" % self.workbookname
+        # except:
+        #     print "%s\tError\n" % self.workbookname
+
 
 if __name__ == '__main__':
+    val = u'可达'
+    v1 = val.encode('utf-8')
+    print v1
     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+"-网络测试.xlsx")
     localip = '10.0.16.55'
     dt = {
