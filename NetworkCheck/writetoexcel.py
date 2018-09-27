@@ -15,7 +15,7 @@ class WriteToExcel(object):
             #reload(sys)
         #sys.setdefaultencoding('utf-8')
         # try:
-            titleband = [u'时间间隔（s）\主机']
+            titleband = [u'时间间隔\主机']
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
             titleport = [u'测试端口', u'是否对外开放']
             bandlocal = [u'本地主机',localhostip]
@@ -31,9 +31,9 @@ class WriteToExcel(object):
                     titleband.append(ast.literal_eval(data["otherhost"])[host])
 
             workbook = xlsxwriter.Workbook(self.workbookname)
-            bandworksheet = workbook.add_worksheet('bandwidth')
-            networksheet = workbook.add_worksheet('netconnectivity')
-            portworksheet = workbook.add_worksheet('portconnectivity')
+            bandworksheet = workbook.add_worksheet(u'带宽')
+            networksheet = workbook.add_worksheet(u'外网连接状态')
+            portworksheet = workbook.add_worksheet(u'端口开放情况')
 
             format_title = workbook.add_format()
             format_title.set_border(1)
@@ -67,7 +67,7 @@ class WriteToExcel(object):
                 print p, ast.literal_eval(data["portconnect"])[p]
                 print ast.literal_eval(data["portconnect"])[p].decode('utf-8')
                 testport.append(p)
-                portconn.append(ast.literal_eval(data["portconnect"])[p])
+                portconn.append(ast.literal_eval(data["portconnect"])[p].decode('utf-8'))
 
             portworksheet.write_row('A1', titleport, format_title)
             portworksheet.write_column('A2', testport, format_title)
