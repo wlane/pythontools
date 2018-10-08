@@ -20,7 +20,7 @@ class WriteToExcel(object):
             titleport = [u'测试端口', u'是否对外开放']
             bandlocal = [u'本地主机',localhostip]
             testaddress = ['www.baidu.com', '114.114.114.114']
-            netlocalhost = [u'测试主机', '192.168.0.193']
+            netlocalhost = [u'测试主机', '192.168.0.193']    # 填写对外开放的云服务器地址
             testport = []
             portconn = []
 
@@ -52,7 +52,7 @@ class WriteToExcel(object):
                 line = line+1
                 print line
 
-            networksheet.write_row('A1',netlocalhost, format_title)
+            networksheet.write_row('A1', netlocalhost, format_title)
             networksheet.write_row('A2', titlenet, format_title)
             networksheet.write_column('A3', testaddress, format_title)
             line = 3
