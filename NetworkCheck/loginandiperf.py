@@ -18,9 +18,11 @@ class ServerLogin(object):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(self.ip, 22, username, self.passwd, timeout=5)
-            out = []
-            error = []
             for cmd in cmds:
+                out = []
+                error = []
+                print "cmd----"
+                print cmd
                 stdin, stdout, stderr = ssh.exec_command(cmd)
                 stdin.write("yes")
                 for everyout in stdout.readlines():
@@ -31,17 +33,18 @@ class ServerLogin(object):
                 print out
                 print "error*****"
                 print error
-            ssh.close()
-            if len(out) > 2:
-                if out[1].startswith('Client'):
-                    q.put((out, self.ip))
-                elif out[1].startswith('Connected to'):
-                    qport.put((u'可达', self.ip ))
+                if len(out) > 2:
+                    if out[1].startswith('Client'):
+                        q.put((out, self.ip))
+                    elif out[1].startswith('Connected to'):
+                        qport.put((u'可达', self.ip))
+                    else:
+                        print "something is wrong with exec_commad"
                 else:
-                    print "something is wrong with exec_commad"
-            else:
-                if error[0].startswith('telnet: Unable to'):
-                    qport.put((u'不可达', self.ip))
+                    if error[0].startswith('telnet: Unable to'):
+                        qport.put((u'不可达', self.ip))
+            ssh.close()
+
 
         except:
             print "%s\tError\n" % self.ip
@@ -105,10 +108,15 @@ if __name__ == '__main__':
     # print "----------------------------------------"
     # print bandvalue
     # print hostip
-
+    port = [22, 3333]
+    remote_telnet_cmd = []
     portresult = []
     qport = Queue.Queue()
-    remote_telnet_cmd = ['(echo quit;sleep 1) | telnet 192.168.0.180 22']
+    for p in port:
+        midp = '(echo quit;sleep 1) | telnet 192.168.0.180 '+str(p)
+        print midp
+        remote_telnet_cmd.append(midp)
+    print remote_telnet_cmd
     for localhost, localpd in localhosts.items():
         remote_run = ServerLogin(localhost, localpd)
         a = threading.Thread(target=remote_run.sshlogin, args=('xueyunfei', remote_telnet_cmd))
@@ -117,5 +125,5 @@ if __name__ == '__main__':
     while not qport.empty():
         portresult.append(qport.get())
     for item in portresult:
-        print item[0]
+        print item
 
