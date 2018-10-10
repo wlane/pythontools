@@ -12,7 +12,7 @@ class WriteToExcel(object):
         self.workbookname = workbookname
 
     def writeinband(self, localhostip, **data):
-            #reload(sys)
+        #reload(sys)
         #sys.setdefaultencoding('utf-8')
         # try:
             titleband = [u'时间间隔\主机']
@@ -68,7 +68,7 @@ class WriteToExcel(object):
                 print ast.literal_eval(data["portconnect"])[p].decode('utf-8')
                 testport.append(p)
                 portconn.append(ast.literal_eval(data["portconnect"])[p].decode('utf-8'))
-
+            print portconn
             portworksheet.write_row('A1', titleport, format_title)
             portworksheet.write_column('A2', testport, format_title)
             portworksheet.write_column('B2', portconn, format_title)

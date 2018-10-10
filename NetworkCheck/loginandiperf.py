@@ -38,12 +38,12 @@ class ServerLogin(object):
                     if out[1].startswith('Client'):
                         q.put((out, self.ip))
                     elif out[1].startswith('Connected to'):
-                        qport.put((cmd.split()[-1], u'可达', self.ip))
+                        qport.put((cmd.split()[-1], '可达', self.ip))
                     else:
                         print "something is wrong with exec_commad"
                 else:
                     if error[0].startswith('telnet: Unable to'):
-                        qport.put((cmd.split()[-1], u'不可达', self.ip))
+                        qport.put((cmd.split()[-1], '不可达', self.ip))
             ssh.close()
 
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     # username = 'anyuan'
     # threads = []
     # result = []
-    # hostip = []
+    # otherhost = []
     # bandvalue = []
     # k = 0
     # m = 0
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     #         i = 6
     #         j = 0
     #         interval = locals()
-    #         hostip.append(item[0][1].split()[3].rstrip(','))
+    #         otherhost.append(item[0][1].split()[3].rstrip(','))
     #         while i < len(item[0]):
     #             if 'a'+str(j) not in interval:
     #                 interval['a'+str(j)] = []
@@ -108,10 +108,12 @@ if __name__ == '__main__':
     #     k += 1
     # print "----------------------------------------"
     # print bandvalue
-    # print hostip
+    # print otherhost
+
     port = [22, 3333]
     remote_telnet_cmd = []
     portresult = []
+    portconnect = {}
     qport = Queue.Queue()
     for p in port:
         midp = '(echo quit;sleep 1) | telnet 192.168.0.180 '+str(p)
@@ -125,7 +127,7 @@ if __name__ == '__main__':
         a.join()
     while not qport.empty():
         portresult.append(qport.get())
+    print portresult
     for item in portresult:
-        for i in range(len(item)):
-            print item[i],
-
+        portconnect[item[0]] = item[1].decode('utf-8')
+    print portconnect   # unicode字符
