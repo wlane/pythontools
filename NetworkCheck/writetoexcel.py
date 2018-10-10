@@ -19,8 +19,8 @@ class WriteToExcel(object):
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
             titleport = [u'测试端口', u'是否对外开放']
             bandlocal = [u'本地主机',localhostip]
-            testaddress = ['www.baidu.com', '114.114.114.114']
-            netlocalhost = [u'测试主机', '192.168.0.193']    # 填写对外开放的云服务器地址
+            testaddress = ['114.114.114.114', 'www.baidu.com']
+            netlocalhost = [u'测试主机', '192.168.0.193']    # 测试ping状态的主机的ip
             testport = []
             portconn = []
 
@@ -87,6 +87,6 @@ if __name__ == '__main__':
         "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
         "otherhost": "['192.168.0.193', '192.168.0.233']",
         "portconnect": "{'8000': '可达','7001': '不可达'}",
-        "192.168.0.193": "[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]"
+        "pingstatus": "{'192.168.0.193':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']],'192.168.0.180':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]}"
     }
     a.writeinband(localip, **dt)

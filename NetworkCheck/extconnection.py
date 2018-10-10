@@ -44,7 +44,7 @@ class PingStatus(object):
             print "%s\tError\n" % self.ip
 
 
-host = ["114.114.114.114","www.baidu.com"]
+host = ["114.114.114.114", "www.baidu.com"]
 
 # 多线程同时执行
 if __name__ == '__main__':

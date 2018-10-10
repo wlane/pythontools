@@ -21,9 +21,9 @@ class ServerLogin(object):
             for cmd in cmds:
                 out = []
                 error = []
-                print "cmd----"
-                print cmd
-                print cmd.split()[-1]
+                # print "cmd----"
+                # print cmd
+                # print cmd.split()[-1]
                 stdin, stdout, stderr = ssh.exec_command(cmd)
                 stdin.write("yes")
                 for everyout in stdout.readlines():
@@ -39,6 +39,8 @@ class ServerLogin(object):
                         q.put((out, self.ip))
                     elif out[1].startswith('Connected to'):
                         qport.put((cmd.split()[-1], '可达', self.ip))
+                    elif out[0].startswith('PING'):
+                        qping.put((out, self.ip))
                     else:
                         print "something is wrong with exec_commad"
                 else:
@@ -110,24 +112,58 @@ if __name__ == '__main__':
     # print bandvalue
     # print otherhost
 
-    port = [22, 3333]
-    remote_telnet_cmd = []
-    portresult = []
-    portconnect = {}
-    qport = Queue.Queue()
-    for p in port:
-        midp = '(echo quit;sleep 1) | telnet 192.168.0.180 '+str(p)
-        print midp
-        remote_telnet_cmd.append(midp)
-    print remote_telnet_cmd
-    for localhost, localpd in localhosts.items():
-        remote_run = ServerLogin(localhost, localpd)
-        a = threading.Thread(target=remote_run.sshlogin, args=('xueyunfei', remote_telnet_cmd))
+    # port = [22, 3333]
+    # remote_telnet_cmd = []
+    # portresult = []
+    # portconnect = {}
+    # qport = Queue.Queue()
+    # for p in port:
+    #     midp = '(echo quit;sleep 1) | telnet 192.168.0.180 '+str(p)
+    #     print midp
+    #     remote_telnet_cmd.append(midp)
+    # print remote_telnet_cmd
+    # for localhost, localpd in localhosts.items():
+    #     remote_run = ServerLogin(localhost, localpd)
+    #     a = threading.Thread(target=remote_run.sshlogin, args=('xueyunfei', remote_telnet_cmd))
+    #     a.start()
+    #     a.join()
+    # while not qport.empty():
+    #     portresult.append(qport.get())
+    # print portresult
+    # for item in portresult:
+    #     portconnect[item[0]] = item[1].decode('utf-8')
+    # print portconnect   # unicode字符
+
+    host = ["114.114.114.114", "www.baidu.com"]
+    qping = Queue.Queue()
+    remote_ping_cmd = []
+    pingresult = []
+    everystatus = []
+    pingstatus = {}
+    num = 0
+    username = 'anyuan'
+    for i in host:
+        midping = 'ping -c1 '+str(i)
+        remote_ping_cmd.append(midping)
+    for host, pd in remotehosts.items():
+        remote_ping_run = ServerLogin(host, pd)
+        a = threading.Thread(target=remote_ping_run.sshlogin, args=(username, remote_ping_cmd))
         a.start()
         a.join()
-    while not qport.empty():
-        portresult.append(qport.get())
-    print portresult
-    for item in portresult:
-        portconnect[item[0]] = item[1].decode('utf-8')
-    print portconnect   # unicode字符
+    while not qping.empty():
+        pingresult.append(qping.get())
+    print "------------------------------------"
+    for item in pingresult:
+        packetloss = item[0][4].split()[5]
+        minrtt = item[0][5].split('/')[3].split('=')[1]
+        avgrtt = item[0][5].split('/')[4]
+        maxrtt = item[0][5].split('/')[5]
+        everystatus = [packetloss, minrtt, avgrtt, maxrtt]
+        if num % 2 == 0:
+            aggstatus = []
+        aggstatus.append(everystatus)
+        pingstatus[item[1]] = aggstatus
+        num += 1
+    print pingstatus
+
+
