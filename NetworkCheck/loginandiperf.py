@@ -23,6 +23,7 @@ class ServerLogin(object):
                 error = []
                 print "cmd----"
                 print cmd
+                print cmd.split()[-1]
                 stdin, stdout, stderr = ssh.exec_command(cmd)
                 stdin.write("yes")
                 for everyout in stdout.readlines():
@@ -37,12 +38,12 @@ class ServerLogin(object):
                     if out[1].startswith('Client'):
                         q.put((out, self.ip))
                     elif out[1].startswith('Connected to'):
-                        qport.put((u'可达', self.ip))
+                        qport.put((cmd.split()[-1], u'可达', self.ip))
                     else:
                         print "something is wrong with exec_commad"
                 else:
                     if error[0].startswith('telnet: Unable to'):
-                        qport.put((u'不可达', self.ip))
+                        qport.put((cmd.split()[-1], u'不可达', self.ip))
             ssh.close()
 
 
@@ -125,5 +126,6 @@ if __name__ == '__main__':
     while not qport.empty():
         portresult.append(qport.get())
     for item in portresult:
-        print item
+        for i in range(len(item)):
+            print item[i],
 

@@ -24,11 +24,11 @@ class WriteToExcel(object):
             testport = []
             portconn = []
 
-            for host in ast.literal_eval(data["otherhost"]).keys():
+            for host in ast.literal_eval(data["otherhost"]):
                 if host == 'localhost':
-                    bandlocal = [u'本地主机', ast.literal_eval(data["otherhost"])[host]]
+                    bandlocal = [u'本地主机', 'localhost']
                 else:
-                    titleband.append(ast.literal_eval(data["otherhost"])[host])
+                    titleband.append(host)
 
             workbook = xlsxwriter.Workbook(self.workbookname)
             bandworksheet = workbook.add_worksheet(u'带宽')
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     localip = '10.0.16.55'
     dt = {
         "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
-        "otherhost": "{'host1': '192.168.0.193','host2': '192.168.0.233'}",
+        "otherhost": "['192.168.0.193', '192.168.0.233']",
         "portconnect": "{'8000': '可达','7001': '不可达'}",
         "192.168.0.193": "[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]"
     }
