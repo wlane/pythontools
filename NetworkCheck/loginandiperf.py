@@ -57,7 +57,7 @@ remotehosts = {'192.168.0.193': 'aykj83752661', '192.168.0.239': 'aykj83752661'}
 localhosts = {'10.0.16.55':'njay0508'}
 
 if __name__ == '__main__':
-    # remote_cmd = [
+    # remote_cmd = [                # band状态获取
     #     'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
     #     'iperf -s -D 1>&2']          # 根据返回信息判断，当存在返回信息时，会一直判断处于运行状态，不退出
     # local_cmd = ['ls']
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # print bandvalue
     # print otherhost
 
-    # port = [22, 3333]
+    # port = [22, 3333]             # telnet状态获取
     # remote_telnet_cmd = []
     # portresult = []
     # portconnect = {}
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     #     portconnect[item[0]] = item[1].decode('utf-8')
     # print portconnect   # unicode字符
 
-    host = ["114.114.114.114", "www.baidu.com"]
+    host = ["114.114.114.114", "www.baidu.com"]     # ping状态获取
     qping = Queue.Queue()
     remote_ping_cmd = []
     pingresult = []
