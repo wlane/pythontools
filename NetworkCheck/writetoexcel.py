@@ -18,9 +18,9 @@ class WriteToExcel(object):
             titleband = [u'时间间隔\主机']
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
             titleport = [u'测试端口', u'是否对外开放']
-            bandlocal = [u'本地主机',localhostip]
+            bandlocal = [u'本地主机', localhostip]
             testaddress = ['114.114.114.114', 'www.baidu.com']
-            netlocalhost = [u'测试主机', '192.168.0.193']    # 测试ping状态的主机的ip
+                # 测试ping状态的主机的ip
             testport = []
             portconn = []
 
@@ -52,15 +52,19 @@ class WriteToExcel(object):
                 line = line+1
                 print line
 
-            networksheet.write_row('A1', netlocalhost, format_title)
-            networksheet.write_row('A2', titlenet, format_title)
-            networksheet.write_column('A3', testaddress, format_title)
-            line = 3
-            t = ast.literal_eval(data["192.168.0.193"])
+
+            wline = 0
+            t = ast.literal_eval(data["pingstatus"])
             for v_t in t:
-                networksheet.write_row('B'+str(line), v_t, format_title)
-                line += 1
-                print line
+                netlocalhost = [u'测试主机', v_t ]
+                pnum = 0
+                while pnum < 2:
+                    networksheet.write_row('A'+str(wline+1), netlocalhost, format_title)
+                    networksheet.write_row('A'+str(wline+2), titlenet, format_title)
+                    networksheet.write_column('A'+str(wline+3), testaddress, format_title)
+                    networksheet.write_row('B'+str(wline+3+pnum), ast.literal_eval(ast.literal_eval(data["pingstatus"])[v_t])[pnum], format_title)
+                    pnum += 1
+                wline += 4
 
             for p in ast.literal_eval(data["portconnect"]).keys():
                 print "p========"
