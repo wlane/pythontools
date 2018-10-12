@@ -20,7 +20,6 @@ class WriteToExcel(object):
             titleport = [u'测试端口', u'是否对外开放']
             bandlocal = [u'本地主机', localhostip]
             testaddress = ['114.114.114.114', 'www.baidu.com']
-                # 测试ping状态的主机的ip
             testport = []
             portconn = []
 
@@ -62,7 +61,7 @@ class WriteToExcel(object):
                     networksheet.write_row('A'+str(wline+1), netlocalhost, format_title)
                     networksheet.write_row('A'+str(wline+2), titlenet, format_title)
                     networksheet.write_column('A'+str(wline+3), testaddress, format_title)
-                    networksheet.write_row('B'+str(wline+3+pnum), ast.literal_eval(ast.literal_eval(data["pingstatus"])[v_t])[pnum], format_title)
+                    networksheet.write_row('B'+str(wline+3+pnum), ast.literal_eval(data["pingstatus"])[v_t][pnum], format_title)
                     pnum += 1
                 wline += 4
 
