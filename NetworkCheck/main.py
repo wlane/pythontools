@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import paramiko
+
+from login import ServerLogin
+import parameters
 import threading
 import Queue
 
@@ -9,9 +11,12 @@ import Queue
 def baseparameters():
     while 1:
         host = raw_input(u'请确认所有linux主机的用户名和密码一致，是否继续（y/n）: ')
-        if host == 'y':
+        if host == 'y' or host == 'Y':
+            global username, password, localhosts, remotehosts
             username = raw_input(u'请输入用户名：')
             password = raw_input(u'请输入密码：')
+            localhosts = {}
+            remotehosts = {}
             host = raw_input(u'请输入本机的ip地址：')
             hosts = raw_input(u'请输入远程登陆的ip地址，以空格分开：')
             localhosts[host] = password
@@ -21,21 +26,18 @@ def baseparameters():
             print u"你需要先设置用户名和密码，确保他们在所有linux主机上一致"
             exit(5)
         ifcontinous = raw_input(u'请确认以上输入是否正确（y/n）: ')
-        if ifcontinous == 'y':
+        if ifcontinous == 'y' or host == 'Y':
             break
         else:
             continue
 
 
-def pingstatus():
+def pingstatus(username, remotehosts):
     pinghost = ["114.114.114.114", "www.baidu.com"]  # ping状态获取
-    qping = Queue.Queue()
     remote_ping_cmd = []
     pingresult = []
-    everystatus = []
     pingstatus = {}
     num = 0
-    username = 'anyuan'
     for i in pinghost:
         midping = 'ping -c1 ' + str(i)
         remote_ping_cmd.append(midping)
@@ -44,8 +46,11 @@ def pingstatus():
         a = threading.Thread(target=remote_ping_run.sshlogin, args=(username, remote_ping_cmd))
         a.start()
         a.join()
-    while not qping.empty():
-        pingresult.append(qping.get())
+    print locals()
+    print parameters.get_value('test')
+    print parameters.get_value('qping')
+    while not parameters.get_value('qping').empty():
+        pingresult.append(parameters.get_value('qping').get())
     print "------------------------------------"
     for item in pingresult:
         packetloss = item[0][4].split()[5]
@@ -61,18 +66,17 @@ def pingstatus():
     print pingstatus
 
 
-def telnetstatus():
-    port = [22, 3333]  # telnet状态获取
+def telnetstatus(telnetlocalhosts, telnetip, telnetports):
+    # telnetports = [22, 3333]  # telnet状态获取
     remote_telnet_cmd = []
     portresult = []
     portconnect = {}
     qport = Queue.Queue()
-    for p in port:
-        midp = '(echo quit;sleep 1) | telnet 192.168.0.180 ' + str(p)
-        # print midp
+    for p in telnetports:
+        midp = '(echo quit;sleep 1) | telnet ' + telnetip + ' ' + str(p)
         remote_telnet_cmd.append(midp)
     # print remote_telnet_cmd
-    for localhost, localpd in localhosts.items():
+    for localhost, localpd in telnetlocalhosts.items():
         remote_telnet_run = ServerLogin(localhost, localpd)
         a = threading.Thread(target=remote_telnet_run.sshlogin, args=(username, remote_telnet_cmd))
         a.start()
@@ -87,7 +91,7 @@ def telnetstatus():
     print portconnect  # unicode字符
 
 
-def getband():
+def getband(localhosts, remotehosts):
     remote_cmd = [  # band状态获取
         'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
         'iperf -s -D 1>&2']  # 根据返回信息判断，当存在返回信息时，会一直判断处于运行状态，不退出
@@ -147,14 +151,9 @@ def getband():
 
 
 if __name__ == '__main__':
-    remotehosts = {}
-    localhosts = {}
-    username = ''
-    password = ''
     baseparameters()
-
-
+    print "*********"
     print username
     print password
-    print localhosts
     print remotehosts
+    pingstatus(username, remotehosts)
