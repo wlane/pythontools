@@ -68,9 +68,9 @@ class WriteToExcel(object):
             for p in ast.literal_eval(data["portconnect"]).keys():
                 print "p========"
                 print p, ast.literal_eval(data["portconnect"])[p]
-                print ast.literal_eval(data["portconnect"])[p].decode('utf-8')
+                print ast.literal_eval(data["portconnect"])[p]
                 testport.append(p)
-                portconn.append(ast.literal_eval(data["portconnect"])[p].decode('utf-8'))
+                portconn.append(ast.literal_eval(data["portconnect"])[p])
             print portconn
             portworksheet.write_row('A1', titleport, format_title)
             portworksheet.write_column('A2', testport, format_title)
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     dt = {
         "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
         "otherhost": "['192.168.0.193', '192.168.0.233']",
-        "portconnect": "{'8000': '可达','7001': '不可达'}",
+        "portconnect": "{'8000': u'\u4e0d\u53ef\u8fbe','7001': u'\u53ef\u8fbe'}",
         "pingstatus": "{'192.168.0.193':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']],'192.168.0.180':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]}"
     }
     a.writeinband(localip, **dt)
