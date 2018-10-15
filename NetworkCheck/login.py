@@ -14,8 +14,9 @@ class ServerLogin(object):
     def sshlogin(self, username, cmds):
         # try:
             parameters._init()
-            parameters.set_value('test', '888888')
+            parameters.set_value('q', Queue.Queue())
             parameters.set_value('qping', Queue.Queue())
+            parameters.set_value('qport', Queue.Queue())
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(self.ip, 22, username, self.passwd, timeout=5)
@@ -24,9 +25,6 @@ class ServerLogin(object):
             for cmd in cmds:
                 out = []
                 error = []
-                # print "cmd----"
-                # print cmd
-                # print cmd.split()[-1]
                 stdin, stdout, stderr = ssh.exec_command(cmd)
                 stdin.write("yes")
                 for everyout in stdout.readlines():
@@ -39,9 +37,9 @@ class ServerLogin(object):
                 # print error
                 if len(out) > 2:
                     if out[1].startswith('Client'):
-                        q.put((out, self.ip))
+                        parameters.get_value('q').put((out, self.ip))
                     elif out[1].startswith('Connected to'):
-                        qport.put((cmd.split()[-1], '可达', self.ip))
+                        parameters.get_value('qport').put((cmd.split()[-1], '可达', self.ip))
                     elif out[0].startswith('PING'):
                         parameters.get_value('qping').put((out, self.ip))
                     else:
