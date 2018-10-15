@@ -3,9 +3,11 @@
 
 
 from login import ServerLogin
+from writetoexcel import WriteToExcel
 import parameters
 import threading
 import Queue
+import time
 
 
 def baseparameters():
@@ -35,6 +37,7 @@ def baseparameters():
 
 
 def pingstatus(username, remotehosts):
+    print "开始进行ping值检测..."
     pinghost = ["114.114.114.114", "www.baidu.com"]  # ping状态获取
     remote_ping_cmd = []
     pingresult = []
@@ -64,12 +67,14 @@ def pingstatus(username, remotehosts):
         aggstatus.append(everystatus)
         pingstatus[item[1]] = aggstatus
         num += 1
-    print "------------------------------------"
-    print "pingstatus***"
-    print pingstatus
+    # print "------------------------------------"
+    # print "pingstatus***"
+    # print pingstatus
+    return pingstatus
 
 
 def telnetstatus(username, telnetip, telnetports):
+    print "开始检测对外开放的端口..."
     telnetlocalhosts = {'192.168.0.163': 'aykj83752661'}   # 远程登陆执行telnet命令的服务器
     telnetport = '22'  # 远程登陆执行telnet命令的服务器的端口
     # telnetports = [22, 3333]  # telnet状态获取
@@ -88,12 +93,14 @@ def telnetstatus(username, telnetip, telnetports):
         portresult.append(parameters.get_value('qport').get())
     for item in portresult:
         portconnect[item[0]] = item[1].decode('utf-8')
-    print "----------------------------------------"
-    print "portconnect"
-    print portconnect  # unicode字符
+    # print "----------------------------------------"
+    # print "portconnect"
+    # print portconnect  # unicode字符
+    return portconnect
 
 
 def getband(username, localhosts, remotehosts):
+    print '开始检测服务器之间的带宽...'
     remote_cmd = [  # band状态获取
         'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
         'iperf -s -D 1>&2']  # 根据返回信息判断，当存在返回信息时，会一直判断处于运行状态，不退出
@@ -132,7 +139,6 @@ def getband(username, localhosts, remotehosts):
                 if 'a' + str(j) not in interval:
                     interval['a' + str(j)] = []
                     interval['a' + str(j)].append(stritem.join(item[0][i].split()[2:5]))
-                # print interval['a'+str(j)]
                 i += 1
                 j += 1
             i = 6
@@ -145,13 +151,15 @@ def getband(username, localhosts, remotehosts):
     while k < m:
         bandvalue.append(locals()['a' + str(k)])
         k += 1
-    print "----------------------------------------"
-    print "band***"
-    print bandvalue
-    print otherhost
+    # print "----------------------------------------"
+    # print "band***"
+    # print bandvalue
+    # print otherhost
+    return bandvalue, otherhost
 
 
 if __name__ == '__main__':
+    dt = {}
     baseparameters()
     # print "*********"
     # print username
@@ -162,7 +170,18 @@ if __name__ == '__main__':
     parameters.set_value('q', Queue.Queue())
     parameters.set_value('qping', Queue.Queue())
     parameters.set_value('qport', Queue.Queue())
-    pingstatus(username, remotehosts)
-    getband(username, localhosts, remotehosts)
-    telnetstatus(username, telnetip, telnetports)
-
+    pingvalue = pingstatus(username, remotehosts)
+    band, hostip = getband(username, localhosts, remotehosts)
+    portvalue = telnetstatus(username, telnetip, telnetports)
+    print pingvalue
+    print band
+    print hostip
+    print portvalue
+    dt["bandvalue"] = '"' + band + '"'
+    dt["otherhost"] = '"' + hostip + '"'
+    dt["portconnect"] = '"' + portvalue + '"'
+    dt["pingstatus"] = '"' + pingvalue + '"'
+    print dt
+    # for localhostip in localhosts.keys():
+    #     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime()) + "-网络测试.xlsx")
+    #     a.writeinband(localhostip, **dt)

@@ -80,16 +80,16 @@ class WriteToExcel(object):
         #     print "%s\tError\n" % self.workbookname
 
 
-if __name__ == '__main__':
-    val = u'可达'
-    v1 = val.encode('utf-8')
-    print v1
-    a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+"-网络测试.xlsx")
-    localip = '10.0.16.55'
-    dt = {
-        "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
-        "otherhost": "['192.168.0.193', '192.168.0.233']",
-        "portconnect": "{'8000': u'\u4e0d\u53ef\u8fbe','7001': u'\u53ef\u8fbe'}",
-        "pingstatus": "{'192.168.0.193':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']],'192.168.0.180':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]}"
-    }
-    a.writeinband(localip, **dt)
+# if __name__ == '__main__':
+#     val = u'可达'
+#     v1 = val.encode('utf-8')
+#     print v1
+#     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+"-网络测试.xlsx")
+#     localip = '10.0.16.55'
+#     dt = {
+#         "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
+#         "otherhost": "['192.168.0.193', '192.168.0.233']",
+#         "portconnect": "{'8000': u'\u4e0d\u53ef\u8fbe','7001': u'\u53ef\u8fbe'}",
+#         "pingstatus": "{'192.168.0.193':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']],'192.168.0.180':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]}"
+#     }
+#     a.writeinband(localip, **dt)
