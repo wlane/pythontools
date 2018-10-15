@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import paramiko
-import Queue
 import parameters
 
 class ServerLogin(object):
@@ -11,15 +10,11 @@ class ServerLogin(object):
         self.ip = ip
         self.passwd = passwd
 
-    def sshlogin(self, username, cmds):
+    def sshlogin(self, username, cmds, port=22):
         # try:
-            parameters._init()
-            parameters.set_value('q', Queue.Queue())
-            parameters.set_value('qping', Queue.Queue())
-            parameters.set_value('qport', Queue.Queue())
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(self.ip, 22, username, self.passwd, timeout=5)
+            ssh.connect(self.ip, port, username, self.passwd, timeout=5)
             # global qping
             # qping = Queue.Queue()
             for cmd in cmds:
@@ -49,7 +44,7 @@ class ServerLogin(object):
                 else:
                     if len(out) == 1 or len(out) == 2:
                         if error[0].startswith('telnet: Unable to'):
-                            qport.put((cmd.split()[-1], '不可达', self.ip))
+                            parameters.get_value('qport').put((cmd.split()[-1], '不可达', self.ip))
             ssh.close()
 
         #

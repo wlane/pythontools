@@ -3,7 +3,7 @@
 
 
 # class GolPara(object):     #全局变量定义文件
-def _init():        #初始化
+def _init():                 #初始化
     global _global_dict
     _global_dict = {}
 
