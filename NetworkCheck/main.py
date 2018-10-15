@@ -161,11 +161,6 @@ def getband(username, localhosts, remotehosts):
 if __name__ == '__main__':
     dt = {}
     baseparameters()
-    # print "*********"
-    # print username
-    # print password
-    # print localhosts
-    # print remotehosts
     parameters._init()
     parameters.set_value('q', Queue.Queue())
     parameters.set_value('qping', Queue.Queue())
@@ -173,15 +168,15 @@ if __name__ == '__main__':
     pingvalue = pingstatus(username, remotehosts)
     band, hostip = getband(username, localhosts, remotehosts)
     portvalue = telnetstatus(username, telnetip, telnetports)
-    print pingvalue
-    print band
-    print hostip
-    print portvalue
-    dt["bandvalue"] = '"' + str(band) + '"'
-    dt["otherhost"] = '"' + str(hostip) + '"'
-    dt["portconnect"] = '"' + str(portvalue) + '"'
-    dt["pingstatus"] = '"' + str(pingvalue) + '"'
+    # print pingvalue
+    # print band
+    # print hostip
+    # print portvalue
+    dt["bandvalue"] = str(band)
+    dt["otherhost"] = str(hostip)
+    dt["portconnect"] = str(portvalue)
+    dt["pingstatus"] = str(pingvalue)
     print dt
-    # for localhostip in localhosts.keys():
-    #     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime()) + "-网络测试.xlsx")
-    #     a.writeinband(localhostip, **dt)
+    for localhostip in localhosts.keys():
+        a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime()) + "-网络测试.xlsx")
+        a.writeinband(localhostip, **dt)

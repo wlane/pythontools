@@ -40,12 +40,16 @@ class ServerLogin(object):
                         parameters.get_value('qping').put((out, self.ip))
                     else:
                         if len(error) > 0:
-                            print error
-                        print "something is wrong with "+cmd+" in "+self.ip
+                            print error,
+                            print " something is wrong with " + cmd + " in " + self.ip
                 else:
                     if len(out) == 1 or len(out) == 2:
                         if error[0].startswith('telnet: Unable to'):
                             parameters.get_value('qport').put((cmd.split()[-1], '不可达', self.ip))
+                    else:
+                        if len(error) > 0:
+                            print error,
+                            print " something is wrong with " + cmd + " in " + self.ip
             ssh.close()
 
         #
