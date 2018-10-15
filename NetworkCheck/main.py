@@ -177,10 +177,10 @@ if __name__ == '__main__':
     print band
     print hostip
     print portvalue
-    dt["bandvalue"] = '"' + band + '"'
-    dt["otherhost"] = '"' + hostip + '"'
-    dt["portconnect"] = '"' + portvalue + '"'
-    dt["pingstatus"] = '"' + pingvalue + '"'
+    dt["bandvalue"] = '"' + str(band) + '"'
+    dt["otherhost"] = '"' + str(hostip) + '"'
+    dt["portconnect"] = '"' + str(portvalue) + '"'
+    dt["pingstatus"] = '"' + str(pingvalue) + '"'
     print dt
     # for localhostip in localhosts.keys():
     #     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime()) + "-网络测试.xlsx")
