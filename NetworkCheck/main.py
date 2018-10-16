@@ -47,9 +47,9 @@ def pingstatus(username, localhosts, remotehosts):      # ping检测
     for i in pinghost:      # 拼接完整的命令
         midping = 'ping -c1 ' + str(i)
         remote_ping_cmd.append(midping)
-    allhost = localhosts.copy()
-    allhost.update(remotehosts)
-    for host, pd in allhost.items():    # 登陆每台服务器执行操作
+    allhosts = localhosts.copy()
+    allhosts.update(remotehosts)
+    for host, pd in allhosts.items():    # 登陆每台服务器执行操作
         remote_ping_run = ServerLogin(host, pd)
         a = threading.Thread(target=remote_ping_run.sshlogin, args=(username, remote_ping_cmd))
         a.start()
