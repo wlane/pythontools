@@ -12,7 +12,7 @@ class ServerLogin(object):
         self.passwd = passwd
 
     def sshlogin(self, username, cmds, port=22):
-        # try:
+        try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(self.ip, port, username, self.passwd, timeout=5)
@@ -51,8 +51,6 @@ class ServerLogin(object):
                             print error,
                             print " something is wrong with " + cmd + " in " + self.ip
             ssh.close()
-
-        #
-        # except Exception,err:
-        #     print "%s\tError\n" % self.ip
-        #     print err
+        except Exception,err:
+            print "%s\tError\n" % self.ip
+            print err

@@ -14,7 +14,7 @@ class WriteToExcel(object):
     def writeinband(self, localhostip, **data):
         #reload(sys)
         #sys.setdefaultencoding('utf-8')
-        # try:
+        try:
             titleband = [u'时间间隔\主机']
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
             titleport = [u'测试端口', u'是否对外开放']
@@ -76,8 +76,9 @@ class WriteToExcel(object):
             portworksheet.write_column('A2', testport, format_title)
             portworksheet.write_column('B2', portconn, format_title)
             workbook.close()
-        # except:
-        #     print "%s\tError\n" % self.workbookname
+        except Exception, err:
+            print "%s\tError:\n" % self.workbookname
+            print err
 
 
 # if __name__ == '__main__':
