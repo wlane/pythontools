@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import xlsxwriter
-import time
 import ast
-import sys
 
-class WriteToExcel(object):
 
-    def __init__(self,workbookname ):
+class WriteToExcel(object):     # 将相应内容写入到excel文档的类
+
+    def __init__(self, workbookname):   # 初始化
         self.workbookname = workbookname
 
-    def writeinband(self, localhostip, **data):
-        #reload(sys)
-        #sys.setdefaultencoding('utf-8')
+    def writeinband(self, localhostip, **data):     # 写入excel
+        # reload(sys)
+        # sys.setdefaultencoding('utf-8')
         try:
             titleband = [u'时间间隔\主机']
             titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
@@ -27,20 +26,20 @@ class WriteToExcel(object):
                 if host == 'localhost':
                     bandlocal = [u'本地主机', 'localhost']
                 else:
-                    titleband.append(host)
+                    titleband.append(host)      # 除本机外的其他主机
 
-            workbook = xlsxwriter.Workbook(self.workbookname)
-            bandworksheet = workbook.add_worksheet(u'带宽')
-            networksheet = workbook.add_worksheet(u'外网连接状态')
-            portworksheet = workbook.add_worksheet(u'端口开放情况')
+            workbook = xlsxwriter.Workbook(self.workbookname)       # 生成名为workbookname的excel文档
+            bandworksheet = workbook.add_worksheet(u'带宽')   # 增加一个叫带宽的sheet
+            networksheet = workbook.add_worksheet(u'外网连接状态')    # 增加一个叫外网连连接状态的sheet
+            portworksheet = workbook.add_worksheet(u'端口开放情况')   # 增加一个叫端口开放情况的sheet
 
-            format_title = workbook.add_format()
+            format_title = workbook.add_format()    # excel文档的格式设置
             format_title.set_border(1)
             format_title.set_bg_color('#cccccc')
             format_title.set_align('center')
             format_title.set_bold()
 
-            bandworksheet.write_row('A1', bandlocal, format_title)
+            bandworksheet.write_row('A1', bandlocal, format_title)  # 添加带宽sheet的内容
             bandworksheet.write_row('A2', titleband, format_title)
             line = 3
             t = ast.literal_eval(data["bandvalue"])
@@ -51,8 +50,7 @@ class WriteToExcel(object):
                 line = line+1
                 print line
 
-
-            wline = 0
+            wline = 0       # 添加外网连接状态sheet的内容
             t = ast.literal_eval(data["pingstatus"])
             for v_t in t:
                 netlocalhost = [u'测试主机', v_t ]
@@ -65,7 +63,7 @@ class WriteToExcel(object):
                     pnum += 1
                 wline += 4
 
-            for p in ast.literal_eval(data["portconnect"]).keys():
+            for p in ast.literal_eval(data["portconnect"]).keys():      # 添加端口开放情况sheet的内容
                 print "p========"
                 print p, ast.literal_eval(data["portconnect"])[p]
                 print ast.literal_eval(data["portconnect"])[p]
@@ -76,21 +74,6 @@ class WriteToExcel(object):
             portworksheet.write_column('A2', testport, format_title)
             portworksheet.write_column('B2', portconn, format_title)
             workbook.close()
-        except Exception, err:
+        except Exception, err:      # 出错处理
             print "%s\tError:\n" % self.workbookname
             print err
-
-
-# if __name__ == '__main__':
-#     val = u'可达'
-#     v1 = val.encode('utf-8')
-#     print v1
-#     a = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime())+"-网络测试.xlsx")
-#     localip = '10.0.16.55'
-#     dt = {
-#         "bandvalue": "[['0.0-5.0 sec', '94.2 Mbits/sec', '5.6 Mbits/sec'], ['5.0-10.0 sec', '92.2 Mbits/sec'], ['0.0-10.0 sec', '93.2 Mbits/sec']]",
-#         "otherhost": "['192.168.0.193', '192.168.0.233']",
-#         "portconnect": "{'8000': u'\u4e0d\u53ef\u8fbe','7001': u'\u53ef\u8fbe'}",
-#         "pingstatus": "{'192.168.0.193':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']],'192.168.0.180':[['100%', 'null', 'null', 'null'], ['0%', '7.8 ms', '88.5 ms', '9.0 ms']]}"
-#     }
-#     a.writeinband(localip, **dt)
