@@ -67,7 +67,7 @@ def pingstatus(username, localhosts, remotehosts, pingport=22):      # ping检�
         maxrtt = 'null'
         for i in item[0]:
             if 'packet' in i:
-                packetloss = i.split()[5]     # 截取测试结果,此处的数据63与ping命令后面选项c的值有关,c值加3
+                packetloss = i.split()[5]     # 截取测试结果
             if 'rtt' in i:
                 minrtt = i.split('/')[3].split('=')[1]
                 avgrtt = i.split('/')[4]
@@ -107,7 +107,7 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
     remote_telnet_run = ServerLogin(telnethost, telnetpd)   # 登陆相应服务器执行命令
     b = threading.Thread(target=remote_telnet_run.sshlogin, args=(telnetuser, remote_telnet_cmd, telnetport))
     b.start()
-    b.join()
+    # b.join()
     while not parameters.get_value('qport').empty():    # 处理上述执行结果队列中的数据
         portresult.append(parameters.get_value('qport').get())
     for item in portresult:
@@ -138,9 +138,9 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
             c = threading.Thread(target=remote_run.sshlogin, args=(username, remote_cmd, bandport))
             d = threading.Thread(target=local_run.sshlogin, args=(username, local_cmd, bandport))
             c.start()
-            c.join()
+            # c.join()
             d.start()
-            d.join()
+            # d.join()
     while not parameters.get_value('q').empty():    # 处理上述操作后队列的数据
         result.append(parameters.get_value('q').get())
     for item in result:
