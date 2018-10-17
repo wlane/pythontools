@@ -41,7 +41,7 @@ def baseparameters():       # 一些基础参数的获取
 
 def pingstatus(username, localhosts, remotehosts, pingport=22):      # ping检测
     print "开始进行ping值检测...请稍候"
-    pinghost = ["114.114.114.115", "www.baidu.com"]  # ping状态获取
+    pinghost = ["114.114.114.114", "www.baidu.com"]  # ping状态获取
     remote_ping_cmd = []
     pingresult = []
     pingstatus = {}
