@@ -49,7 +49,6 @@ class WriteToExcel(object):     # 将相应内容写入到excel文档的类
 
             wline = 0       # 添加外网连接状态sheet的内容
             t = ast.literal_eval(data["pingstatus"])
-
             for v_t in t:
                 netlocalhost = [u'测试主机', v_t ]
                 pnum = 0
