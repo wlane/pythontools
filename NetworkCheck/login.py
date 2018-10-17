@@ -25,6 +25,8 @@ class ServerLogin(object):      # 登陆服务器并执行命令的类
                     out.append(everyout)
                 for everyerror in stderr.readlines():   # 错误输出
                     error.append(everyerror)
+                print "out: " + str(out) + " in " + self.ip
+                print "error: " + str(error) + " in " + self.ip
                 if len(out) > 2:    # 当输出内容长度大于2时，即有效输出
                     if out[1].startswith('Client'):     # 根据输出判断操作是带宽检测,将内容存入q队列
                         parameters.get_value('q').put((out, self.ip))

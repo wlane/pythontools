@@ -15,7 +15,7 @@ class WriteToExcel(object):     # 将相应内容写入到excel文档的类
         # sys.setdefaultencoding('utf-8')
         try:
             titleband = [u'时间间隔\主机']
-            titlenet = [u'测试地址', u'丢包率', u'rtt最大时长', u'rtt最小时长', u'rtt平均时间']
+            titlenet = [u'测试地址', u'丢包率', u'rtt最大时长(ms)', u'rtt最小时长(ms)', u'rtt平均时间(ms)']
             titleport = [u'测试端口', u'是否对外开放']
             bandlocal = [u'本地主机', localhostip]
             testaddress = ['114.114.114.114', 'www.baidu.com']
@@ -43,12 +43,9 @@ class WriteToExcel(object):     # 将相应内容写入到excel文档的类
             bandworksheet.write_row('A2', titleband, format_title)
             line = 3
             t = ast.literal_eval(data["bandvalue"])
-            print "t= "
-            print t
             for v_t in t:
                 bandworksheet.write_row('A'+str(line), v_t, format_title)
                 line = line+1
-                print line
 
             wline = 0       # 添加外网连接状态sheet的内容
             t = ast.literal_eval(data["pingstatus"])
@@ -64,12 +61,8 @@ class WriteToExcel(object):     # 将相应内容写入到excel文档的类
                 wline += 4
 
             for p in ast.literal_eval(data["portconnect"]).keys():      # 添加端口开放情况sheet的内容
-                print "p========"
-                print p, ast.literal_eval(data["portconnect"])[p]
-                print ast.literal_eval(data["portconnect"])[p]
                 testport.append(p)
                 portconn.append(ast.literal_eval(data["portconnect"])[p])
-            print portconn
             portworksheet.write_row('A1', titleport, format_title)
             portworksheet.write_column('A2', testport, format_title)
             portworksheet.write_column('B2', portconn, format_title)
