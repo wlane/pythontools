@@ -190,4 +190,4 @@ if __name__ == '__main__':      # 主函数
     for localhostip in localhosts.keys():   # 写入excel文档
         e = WriteToExcel(time.strftime("%Y-%m-%d-%H-%M", time.localtime()) + "-网络测试.xlsx")
         e.writeinband(localhostip, **dt)
-
+    print "检测完毕！"
