@@ -132,7 +132,7 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
         for localhost, localpd in localhosts.items():
             local_cmd = [
                 'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
-                'iperf -c ' + host + ' -t 300 -i 5']
+                'iperf -c ' + host + ' -t 300 -i 10']       # 10秒的间隔.小于10的话需要调整下面写入时间间隔的方式
             remote_run = ServerLogin(host, pd)
             local_run = ServerLogin(localhost, localpd)
             c = threading.Thread(target=remote_run.sshlogin, args=(username, remote_cmd, bandport))
@@ -153,7 +153,7 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
             while i < len(item[0]):     # 遍历（从第7个值开始计算）
                 if 'a' + str(j) not in interval:     # 在没有定义本地变量a0,a1...的情况下初始化变量
                     interval['a' + str(j)] = []
-                    interval['a' + str(j)].append(stritem.join(item[0][i].split()[2:5]))  # 写入时间间隔，例如0.0-5.0 sec
+                    interval['a' + str(j)].append(stritem.join(item[0][i].split()[2:4]))  # 写入时间间隔，例如0.0-10.0 sec
                 i += 1
                 j += 1
             i = 6
