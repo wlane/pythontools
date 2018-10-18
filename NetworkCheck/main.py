@@ -56,7 +56,7 @@ def pingstatus(username, localhosts, remotehosts, pingport=22):      # ping检�
         remote_ping_run = ServerLogin(host, pd)
         a = threading.Thread(target=remote_ping_run.sshlogin, args=(username, remote_ping_cmd, pingport))
         a.start()
-        a.join()
+        # a.join()
     while not parameters.get_value('qping').empty():        # 处理上面操作完成后队列中的数据
         pingresult.append(parameters.get_value('qping').get())
     # print pingresult
@@ -105,6 +105,7 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
         midp = '(echo quit;sleep 1) | telnet ' + telnetip + ' ' + str(p)
         remote_telnet_cmd.append(midp)
     remote_telnet_run = ServerLogin(telnethost, telnetpd)   # 登陆相应服务器执行命令
+    # 以下可以不用多线程
     b = threading.Thread(target=remote_telnet_run.sshlogin, args=(telnetuser, remote_telnet_cmd, telnetport))
     b.start()
     # b.join()
@@ -118,10 +119,6 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
 
 def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
     print "开始检测服务器之间的带宽...请稍候"
-    remote_cmd = [  # band状态获取
-        'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
-        'iperf -s -D 1>&2']  # 根据返回信息判断，当存在返回信息时，会一直判断处于运行状态，不退出
-    local_cmd = ['ls']
     threads = []
     result = []
     otherhost = []
@@ -129,18 +126,20 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
     k = 0
     m = 0
     for host, pd in remotehosts.items():    # 登陆相应服务器执行，先执行iperf服务端,再执行客户端操作
+        remote_cmd = [  # band状态获取
+            'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
+            'iperf -s -D 1>&2']  # 根据返回信息判断，当存在返回信息时，会一直判断处于运行状态，不退出
+        remote_run = ServerLogin(host, pd)
+        c = threading.Thread(target=remote_run.sshlogin, args=(username, remote_cmd, bandport))
+        c.start()
+    for host in remotehosts.keys():
         for localhost, localpd in localhosts.items():
             local_cmd = [
                 'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
                 'iperf -c ' + host + ' -t 300 -i 10']       # 10秒的间隔.小于10的话需要调整下面写入时间间隔的方式
-            remote_run = ServerLogin(host, pd)
             local_run = ServerLogin(localhost, localpd)
-            c = threading.Thread(target=remote_run.sshlogin, args=(username, remote_cmd, bandport))
             d = threading.Thread(target=local_run.sshlogin, args=(username, local_cmd, bandport))
-            c.start()
-            # c.join()
             d.start()
-            # d.join()
     while not parameters.get_value('q').empty():    # 处理上述操作后队列的数据
         result.append(parameters.get_value('q').get())
     for item in result:
@@ -153,7 +152,7 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
             while i < len(item[0]):     # 遍历（从第7个值开始计算）
                 if 'a' + str(j) not in interval:     # 在没有定义本地变量a0,a1...的情况下初始化变量
                     interval['a' + str(j)] = []
-                    interval['a' + str(j)].append(stritem.join(item[0][i].split()[2:4]))  # 写入时间间隔，例如0.0-10.0 sec
+                    interval['a' + str(j)].append(stritem.join(item[0][i].split()[2:4]))  # 写入时间间隔,例如0.0-10.0 sec
                 i += 1
                 j += 1
             i = 6
