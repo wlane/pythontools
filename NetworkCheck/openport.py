@@ -15,9 +15,7 @@ class OpenPort(object):     # 打开需要检测的端口
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.bind((self.ip, int(port)))
                 s.listen(10)
-                # print 'Waiting for connection...'
                 sock, addr = s.accept()
-                # print 'Accept new connection from %s:%s...' % addr
                 while True:
                     data = sock.recv(4)
                     time.sleep(1)
@@ -26,7 +24,7 @@ class OpenPort(object):     # 打开需要检测的端口
                         break
                 sock.close()
             except socket.error, msg:  # 出错处理
-                print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+                print 'port :' + port + '. Bind failed. Error Code : ' + str(msg[0]) + ' and Message: ' + msg[1]
 
         def socketclient(self, port):   # socket客户端，发送信息
             try:
