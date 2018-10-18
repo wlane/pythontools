@@ -47,6 +47,7 @@ def pingstatus(username, localhosts, remotehosts, pingport=22):      # ping检�
     pingresult = []
     pingstatus = {}
     aggstatus = []
+    at = []
     num = 0
     for i in pinghost:      # 拼接完整的命令
         midping = 'ping -c60 ' + str(i)
@@ -58,6 +59,9 @@ def pingstatus(username, localhosts, remotehosts, pingport=22):      # ping检�
         a = threading.Thread(target=remote_ping_run.sshlogin, args=(username, remote_ping_cmd, pingport))
         a.start()
         # a.join()
+        at.append(a)        # 将子线程放入列表,等子线程执行结束再执行主线程
+    for t in at:
+        t.join()
     while not parameters.get_value('qping').empty():        # 处理上面操作完成后队列中的数据
         pingresult.append(parameters.get_value('qping').get())
     # print pingresult
@@ -89,6 +93,8 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
     remote_telnet_cmd = []
     portresult = []
     portconnect = {}
+    jt = []
+    kt = []
     i = 0
     for v in telnetlocalhosts.split():  # 获取远程登陆服务器的参数
         if i == 0:
@@ -107,17 +113,11 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
         remote_telnet_cmd.append(midp)
     for port in telnetports.split():        # 开启端口
         openports = OpenPort('0.0.0.0')
-        t = threading.Thread(target=openports.socketserver, args=(port,))
-        t.start()
+        i = threading.Thread(target=openports.socketserver, args=(port,))
+        i.start()
+    time.sleep(3)
     remote_telnet_run = ServerLogin(telnethost, telnetpd)   # 登陆相应服务器执行命令
-    # 以下可以不用多线程
-    b = threading.Thread(target=remote_telnet_run.sshlogin, args=(telnetuser, remote_telnet_cmd, telnetport))
-    b.start()
-    # b.join()
-    for port in telnetports.split():        # 关闭端口
-        openports = OpenPort('0.0.0.0')
-        o = threading.Thread(target=openports.socketclient, args=(port,))
-        o.start()
+    remote_telnet_run.sshlogin(telnetuser, remote_telnet_cmd, telnetport)
     while not parameters.get_value('qport').empty():    # 处理上述执行结果队列中的数据
         portresult.append(parameters.get_value('qport').get())
     for item in portresult:
@@ -134,6 +134,8 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
     bandvalue = []
     k = 0
     m = 0
+    tserver = []
+    tclient = []
     for host, pd in remotehosts.items():    # 登陆相应服务器执行，先执行iperf服务端,再执行客户端操作
         remote_cmd = [  # band状态获取
             'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
@@ -141,7 +143,10 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
         remote_run = ServerLogin(host, pd)
         c = threading.Thread(target=remote_run.sshlogin, args=(username, remote_cmd, bandport))
         c.start()
-    for host in remotehosts.keys():
+        tserver.append(c)
+    for t in tserver:
+        t.join()
+    for host in remotehosts.keys():     # 执行iperf客户端命令
         for localhost, localpd in localhosts.items():
             local_cmd = [
                 'if [ `dpkg -l|grep iperf|wc -l` = 0 ];then echo aykj83752661 |sudo -S apt-get install iperf -y --force-yes;fi',
@@ -149,6 +154,9 @@ def getband(username, localhosts, remotehosts, bandport=22):     # 带宽检测
             local_run = ServerLogin(localhost, localpd)
             d = threading.Thread(target=local_run.sshlogin, args=(username, local_cmd, bandport))
             d.start()
+            tclient.append(d)
+    for t in tclient:
+        t.join()
     while not parameters.get_value('q').empty():    # 处理上述操作后队列的数据
         result.append(parameters.get_value('q').get())
     for item in result:
