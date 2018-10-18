@@ -4,6 +4,7 @@
 
 from login import ServerLogin
 from writetoexcel import WriteToExcel
+from openport import OpenPort
 import parameters
 import threading
 import Queue
@@ -104,11 +105,19 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
     for p in telnetports.split():       # 拼接完成的命令
         midp = '(echo quit;sleep 1) | telnet ' + telnetip + ' ' + str(p)
         remote_telnet_cmd.append(midp)
+    for port in telnetports.split():        # 开启端口
+        openports = OpenPort('0.0.0.0')
+        t = threading.Thread(target=openports.socketserver, args=(port,))
+        t.start()
     remote_telnet_run = ServerLogin(telnethost, telnetpd)   # 登陆相应服务器执行命令
     # 以下可以不用多线程
     b = threading.Thread(target=remote_telnet_run.sshlogin, args=(telnetuser, remote_telnet_cmd, telnetport))
     b.start()
     # b.join()
+    for port in telnetports.split():        # 关闭端口
+        openports = OpenPort('0.0.0.0')
+        o = threading.Thread(target=openports.socketclient, args=(port,))
+        o.start()
     while not parameters.get_value('qport').empty():    # 处理上述执行结果队列中的数据
         portresult.append(parameters.get_value('qport').get())
     for item in portresult:
