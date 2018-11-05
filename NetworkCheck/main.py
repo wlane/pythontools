@@ -122,6 +122,7 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
     if telnetcontinue == 'y' or telnetcontinue == 'Y':
         print "开始检测端口是否对外开放...请稍候"
         remote_telnet_cmd = []
+        telnetkeyfile = "~/.ssh/id_rsa"
         portresult = []
         portconnect = {}
         jt = []
@@ -148,7 +149,7 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
             b.start()
         time.sleep(10)
         remote_telnet_run = ServerLogin(telnethost, telnetpd)   # 登陆相应服务器执行命令
-        remote_telnet_run.sshlogin(telnetuser, remote_telnet_cmd, telnetport)
+        remote_telnet_run.keylogin(telnetuser, telnetkeyfile, remote_telnet_cmd, telnetport)
         while not parameters.get_value('qport').empty():    # 处理上述执行结果队列中的数据
             portresult.append(parameters.get_value('qport').get())
         for item in portresult:
