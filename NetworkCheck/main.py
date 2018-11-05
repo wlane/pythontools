@@ -51,9 +51,9 @@ def baseparameters():       # 一些基础参数的获取
     else:
         sys.exit()
     # global bandcontinue, pingcontinue, telnetcontinue, username, password, loginport, localhosts, remotehosts, telnetlocalhosts, telnetip, telnetports
-    # username = "anyuan"
-    # password = "aykj83752661"
-    # loginport = "22"
+    # username = ""
+    # password = ""
+    # loginport = ""
     # telnetlocalhosts = ""
     # localhosts = {}
     # remotehosts = {}
@@ -61,10 +61,10 @@ def baseparameters():       # 一些基础参数的获取
     # pingcontinue = sys.argv[2]
     # telnetcontinue = sys.argv[3]
     # host = sys.argv[4]
-    # localhosts[host] = "aykj83752661"
+    # localhosts[host] = ""
     # hosts = sys.argv[5]
     # for h in hosts.split():
-    #     remotehosts[h] = "aykj83752661"
+    #     remotehosts[h] = ""
     # telnetip = sys.argv[6]
     # telnetports = sys.argv[7]
 
