@@ -59,7 +59,6 @@ class ServerLogin(object):      # 登陆服务器并执行命令的类
             ssh = paramiko.SSHClient()  # 创建ssh实例
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname=self.ip, port=port, username=username, pkey=key, timeout=5)
-            ssh.connect()
             for cmd in cmds:
                 out = []
                 error = []

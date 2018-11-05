@@ -54,7 +54,9 @@ def baseparameters():       # 一些基础参数的获取
     # username = "anyuan"
     # password = "aykj83752661"
     # loginport = "22"
-    # telnetlocalhosts = "192.168.0.165 22 anyuan aykj83752661"
+    # telnetlocalhosts = "221.226.186.58 5005 anyuan aykj83752661"
+    # localhosts = {}
+    # remotehosts = {}
     # bandcontinue = sys.argv[1]
     # pingcontinue = sys.argv[2]
     # telnetcontinue = sys.argv[3]
@@ -122,7 +124,7 @@ def telnetstatus(telnetlocalhosts, telnetip, telnetports):      # 端口检测
     if telnetcontinue == 'y' or telnetcontinue == 'Y':
         print "开始检测端口是否对外开放...请稍候"
         remote_telnet_cmd = []
-        telnetkeyfile = "~/.ssh/id_rsa"
+        telnetkeyfile = "/home/anyuan/.ssh/id_rsa"
         portresult = []
         portconnect = {}
         jt = []
