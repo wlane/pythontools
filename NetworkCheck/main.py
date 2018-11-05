@@ -54,7 +54,7 @@ def baseparameters():       # 一些基础参数的获取
     # username = "anyuan"
     # password = "aykj83752661"
     # loginport = "22"
-    # telnetlocalhosts = "221.226.186.58 5005 anyuan aykj83752661"
+    # telnetlocalhosts = ""
     # localhosts = {}
     # remotehosts = {}
     # bandcontinue = sys.argv[1]
